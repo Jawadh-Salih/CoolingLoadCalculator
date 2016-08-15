@@ -38,6 +38,8 @@
   <![endif]-->
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+
+
 <div class="wrapper">
 
   <header class="main-header">
@@ -149,7 +151,7 @@
                       </div>
                   </div><!-- /.box-header -->
                   <div class="box-body">
-                        <form role="form" method="POST" id="1" action="">
+                        <form role="form" method="POST" id="1" action="functions/wall_insert.php">
                         <div class="form-group">
                             <label>Wall ID:</label>
                             <select class="form-control select2" name="wall_id" style="width: 100%;">
@@ -180,7 +182,7 @@
                             
                         <div class="form-group">
                             <label>Direction:</label>
-                            <select class="form-control select2" name="wall_type" style="width: 100%;">
+                            <select class="form-control select2" name="direction" style="width: 100%;">
                                 <option>North</option>
                                 <option>North East</option>
                                 <option>East</option>
@@ -222,7 +224,7 @@
                             <input type="number" step="any" class="form-control" style="width: 200px" name ="k_val">
                         </div>    
                             
-                       <button type="submit" style="padding-bottom: 10px" id="btn-login" class="btn btn-warning btn-info pull-left">Submit Wall Data</button>                            
+                       <button type="submit" style="padding-bottom: 10px" id="btn-wall" name="btn-wall" class="btn btn-warning btn-info pull-left">Submit Wall Data</button>
                     </form>
                     </div><!-- /.box-body -->
               </div>
