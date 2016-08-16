@@ -3,6 +3,12 @@
 require_once '../config/DB.php';
 
 $sensible_load = array(0,0,0,0,0,0,0,0,0,0);
+$latent_load - (double)0;
+
+$final_sensible_load = (double)0;
+$final_latent_load = (double)0;
+
+$final_result = (double)0;
 
 //$wall varibles
 
@@ -63,15 +69,51 @@ $roof_area = (double)0;
 $roof_u_value = (double)0;
 
 $roof_id;
+$roof_type;
 $roof_width = (double)0;
 $roof_height = (double)0;
 $roof_thickness = (double)0;
 $roof_k_val = (double)0;
 
+//$ventilation values
+$ven_sensible = (double)0;
+$ven_latent = (double)0;
+
+$ven_volume_floor_rate = (double)0;
+$ven_int_temp = (double)0;
+$ven_ext_temp = (double)0;
+$ven_inside_mois = (double)0;
+$ven_outside_mois = (double)0;
+
+//$occupance values
+$occupance_sensible = (double)0;
+$occupance_latent = (double)0;
+
+$num_of_occupance = (double)0;
+
+//$Lighting values
+$lit_sensible = (double)0;
+
+$lit_votage = (double)0;
+$lit_BF = (double)0;
+$lit_UF = (double)0;
+
+//Equipment values
+$eq_sensible = (double)0;
+
+$eq_votage = (double)0;
+$eq_UF = (double)0;
 
 //$constants
 $h0 = (double)1;
 $h1 = (double)1;
+$bpf = (double)1;
+$ro = (double)1;
+$cp = (double)1;
+$hpg = (double)1;
+$shgpp = (double)1;
+$lhgpp = (double)1;
+$CLF = 1;
 
 //CLTB Values
 $num_cltb = 10;
@@ -261,7 +303,7 @@ while($i<sizeof($result)){
     $floor_ext_tem = $result[$i]['ext_temp'];
     $floor_thickness = $result[$i]['thickness'];
     $floor_k_val = $result[$i]['k_val'];
-    print($door_id);
+    print($floor_id);
     
     $floor_area = $floor_height * $floor_width;
     $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
@@ -286,28 +328,108 @@ $result = $result->fetchAll(PDO::FETCH_ASSOC);
 $i=0;
 while($i<sizeof($result)){
 //Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
-    $floor_id = $result[$i]['floor_id'];
-    $floor_height = $result[$i]['height'];
-    $floor_width = $result[$i]['width'];
-    $floor_int_tem = $result[$i]['int_temp'];
-    $floor_ext_tem = $result[$i]['ext_temp'];
-    $floor_thickness = $result[$i]['thickness'];
-    $floor_k_val = $result[$i]['k_val'];
+    $roof_id = $result[$i]['roof_id'];
+    $roof_type = $result[$i]['roof_type'];
+    $roof_height = $result[$i]['height'];
+    $roof_width = $result[$i]['width'];
+    $roof_thickness = $result[$i]['thickness'];
+    $roof_k_val = $result[$i]['k_val'];
     print($door_id);
     
-    $floor_area = $floor_height * $floor_width;
-    $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
+    $roof_area = $roof_height * $roof_width;
+    $roof_u_value = (1/$h0) + ($roof_thickness/$roof_k_val) + (1/$h1);
     
-    //Temperature difference calculation for sensible load door
-    for($x = 0; $x < $num_cltb; $x++) {
-           $sensible_load[$x] += ($floor_u_value * $floor_area * abs(($floor_ext_tem-$floor_int_tem)));
-        }
+    //Obtained the cltb-roof values based on the type and iterate through that
+    $sql_cltb_roof= "SELECT * FROM cltb_roof WHERE roof_type = :roof_type";
+       $stmt = $DB->prepare($sql_cltb_roof);
+       $stmt->bindParam(':roof_type', $roof_type);
+       $stmt->execute();
+       
+    //Obtain the array from the above query result and calc the value for each time and sum up with $sensible_load
 
     $i++;
 }
 
 //Sensible load calculation - roof - done
 
+//Sensible load and Latent Load calculation - ventilation - start
+
+$sql = "SELECT * FROM tbl_ventilation";
+$result = $DB->prepare($sql);
+
+//Assign each into variables
+$ven_volume_floor_rate = (double)0;
+$ven_int_temp = (double)0;
+$ven_ext_temp = (double)0;
+$ven_inside_mois = (double)0;
+$ven_outside_mois = (double)0;
+
+$ven_sensible = $ven_volume_floor_rate * abs($ven_ext_temp-$ven_int_temp) * abs(1-$bpf) * $ro * $cp; 
+$ven_latent = $ven_volume_floor_rate * abs($ven_outside_mois-$ven_inside_mois) * abs(1-$bpf) * $ro * $hpg;
+
+for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += $ven_sensible;
+}
+        
+$latent_load += $ven_latent;
+
+$result->execute();
+
+//Sensible load and Latent Load calculation - ventilation - done
+
+//Sensible load and Latent Load calculation - occupance - start
+
+$sql = "SELECT * FROM tbl_occupance";
+$result = $DB->prepare($sql);
+//Assign values from DB
+
+$occupance_sensible = $num_of_occupance * $shgpp * $CLF;
+$occupance_latent = $num_of_occupance * $lhgpp;
+
+for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += $occupance_sensible;
+}
+
+$latent_load += $occupance_latent;
+
+
+//Sensible load and Latent Load calculation - occupance - done
+
+//Sensible load and Latent Load calculation - Lighting - start
+
+$sql = "SELECT * FROM tbl_lighting";
+$result = $DB->prepare($sql);
+//Assign values from DB
+
+$lit_sensible = $lit_votage * $lit_BF * $lit_UF * $CLF;
+
+for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += $lit_sensible;
+}
+
+//Sensible load and Latent Load calculation - Lighting - done
+
+//Sensible load and Latent Load calculation - equipment - start
+
+$sql = "SELECT * FROM tbl_equipment";
+$result = $DB->prepare($sql);
+//Assign values from DB
+
+$eq_sensible = $eq_votage * $eq_UF * $CLF;
+
+for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += $eq_sensible;
+}
+
+//Sensible load and Latent Load calculation - equipment - done
+
+//Final Values - results
+$final_sensible_load = (double)0; //Asign the maximunm of $sensible_load array
+$final_latent_load = $latent_load;
+
+$final_result = $final_sensible_load + $final_latent_load;
+
+//Render these three to result.php
 
 
 
