@@ -21,20 +21,53 @@ $wall_k_val = (double)0;
 
 //$window variables
 $window_area = (double)0;
-$wall_u_value = (double)0;
+$window_u_value = (double)0;
 
 $window_id;
 $win_wall_id;
 $window_width = (double)0;
 $window_height = (double)0;
 $window_thickness = (double)0;
-$win_wall_it;
 $window_int_tem = (double)0;
 $window_ext_tem = (double)0;
 $window_k_val = (double)0;
 
-//$window and $door
+//$door variables
 $door_area = (double)0;
+$door_u_value = (double)0;
+
+$door_id;
+$door_wall_id;
+$door_width = (double)0;
+$door_height = (double)0;
+$door_thickness = (double)0;
+$door_int_tem = (double)0;
+$door_ext_tem = (double)0;
+$door_k_val = (double)0;
+
+
+//$floor variables
+$floor_area = (double)0;
+$floor_u_value = (double)0;
+
+$floor_id;
+$floor_width = (double)0;
+$floor_height = (double)0;
+$floor_thickness = (double)0;
+$floor_int_tem = (double)0;
+$floor_ext_tem = (double)0;
+$floor_k_val = (double)0;
+
+//$roof variables
+$roof_area = (double)0;
+$roof_u_value = (double)0;
+
+$roof_id;
+$roof_width = (double)0;
+$roof_height = (double)0;
+$roof_thickness = (double)0;
+$roof_k_val = (double)0;
+
 
 //$constants
 $h0 = (double)1;
@@ -118,7 +151,7 @@ while($i<sizeof($result)){
     else{
         
         for($x = 0; $x < $num_cltb; $x++) {
-           $sensible_load[$x] += ($wall_area * $wall_u_value * abs(($wall_ext_tem-$wall_int_tem)));
+           $sensible_load[$x] += ($wall_u_value * $wall_area * abs(($wall_ext_tem-$wall_int_tem)));
         }
     }
 
@@ -129,7 +162,7 @@ while($i<sizeof($result)){
 
 //Sensible load calculation - window - start
 
-$sql = "SELECT * FROM tbl_wall";
+$sql = "SELECT * FROM tbl_window";
 $result = $DB->prepare($sql);
 
 $result->execute();
@@ -176,6 +209,106 @@ while($i<sizeof($result)){
     $i++;
 }
 //Sensible load calculation - window - done
+
+
+//Sensible load calculation - door - start
+
+$sql = "SELECT * FROM tbl_door";
+$result = $DB->prepare($sql);
+
+$result->execute();
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while($i<sizeof($result)){
+//Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
+    $door_id = $result[$i]['door_id'];
+    $door_wall_id = $result[$i]['wall_id'];
+    $door_height = $result[$i]['height'];
+    $door_width = $result[$i]['width'];
+    $door_int_tem = $result[$i]['int_temp'];
+    $door_ext_tem = $result[$i]['ext_temp'];
+    $door_thickness = $result[$i]['thickness'];
+    $door_k_val = $result[$i]['k_val'];
+    print($door_id);
+    
+    $door_area = $door_height * $door_width;
+    $door_u_value = (1/$h0) + ($door_thickness/$door_k_val) + (1/$h1);
+    
+    //Temperature difference calculation for sensible load door
+    for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += ($door_u_value * $door_area * abs(($door_ext_tem-$door_int_tem)));
+        }
+
+    $i++;
+}
+
+//Sensible load calculation - door - done
+
+//Sensible load calculation - floor - start
+
+$sql = "SELECT * FROM tbl_floor";
+$result = $DB->prepare($sql);
+
+$result->execute();
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while($i<sizeof($result)){
+//Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
+    $floor_id = $result[$i]['floor_id'];
+    $floor_height = $result[$i]['height'];
+    $floor_width = $result[$i]['width'];
+    $floor_int_tem = $result[$i]['int_temp'];
+    $floor_ext_tem = $result[$i]['ext_temp'];
+    $floor_thickness = $result[$i]['thickness'];
+    $floor_k_val = $result[$i]['k_val'];
+    print($door_id);
+    
+    $floor_area = $floor_height * $floor_width;
+    $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
+    
+    //Temperature difference calculation for sensible load door
+    for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += ($floor_u_value * $floor_area * abs(($floor_ext_tem-$floor_int_tem)));
+        }
+
+    $i++;
+}
+
+//Sensible load calculation - floor - done
+
+//Sensible load calculation - roof - start
+
+$sql = "SELECT * FROM tbl_roof";
+$result = $DB->prepare($sql);
+
+$result->execute();
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while($i<sizeof($result)){
+//Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
+    $floor_id = $result[$i]['floor_id'];
+    $floor_height = $result[$i]['height'];
+    $floor_width = $result[$i]['width'];
+    $floor_int_tem = $result[$i]['int_temp'];
+    $floor_ext_tem = $result[$i]['ext_temp'];
+    $floor_thickness = $result[$i]['thickness'];
+    $floor_k_val = $result[$i]['k_val'];
+    print($door_id);
+    
+    $floor_area = $floor_height * $floor_width;
+    $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
+    
+    //Temperature difference calculation for sensible load door
+    for($x = 0; $x < $num_cltb; $x++) {
+           $sensible_load[$x] += ($floor_u_value * $floor_area * abs(($floor_ext_tem-$floor_int_tem)));
+        }
+
+    $i++;
+}
+
+//Sensible load calculation - roof - done
+
+
 
 
 $url = "../results.html";
