@@ -4,10 +4,10 @@ require_once '../config/DB.php';
 
 //$wall varibles
 
-$wall_results = array();
+$sensible_load = array(0,0,0,0,0,0,0,0,0,0);
+
 $wall_area = (double)0; //Will be the 'a' parameter
 $wall_u_value = (double)0;
-$wall_resulst = (double)0;
 
 $wall_id;
 $wall_width = (double)0;
@@ -27,9 +27,13 @@ $door_area = (double)0;
 $h0 = (double)1;
 $h1 = (double)1;
 
+//CLTB Values
+$num_cltb = 10;
+
 
 // Check connection
 
+//Sensible load calculation - wall - start
 //To find out how many number of wall details are entered
 $sql = "SELECT * FROM tbl_wall";
 $result = $DB->prepare($sql);
@@ -89,20 +93,28 @@ while($i<sizeof($result)){
 
     if($wall_type == "Sunlit-YES"){
         //Obtain the CLTD values using a loop and do the calculation for each time value
+        $sql_cltb_wall= "SELECT * FROM cltb_wall WHERE direction = :wall_direction";
+        $stmt = $DB->prepare($sql_cltb_wall);
+        $stmt->bindParam(':wall_direction', $wall_direction);
+        $stmt->execute();
+        
+        //Obtain all the values with respect to the passed direction and insert in the $sensible_load array
+        
     }
 
     else{
-        $wall_result = $wall_area * $wall_u_value * ($wall_int_tem-$wall_ext_tem);
-        // THis result has to be save in an array. Will see.
-       // $wall_results.array_push($wall_result);
-        echo $wall_result;
-
         
+        for($x = 0; $x < 10; $x++) {
+           $sensible_load[$x] += ($wall_area * $wall_u_value * ($wall_ext_tem-$wall_int_tem));//Sally metana int-ext nathanm anik pathada?? Abs ganna weida??
+        }
     }
 
     $i++;
 }
-//echo $wall_results;
+
+//Sensible load calculation - wall - done
+
+
 
 $url = "../results.html";
 
