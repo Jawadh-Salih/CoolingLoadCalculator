@@ -430,6 +430,7 @@ $final_latent_load = $latent_load;
 $final_result = $final_sensible_load + $final_latent_load;
 
 //Render these three to result.php
+//Need to transfer variables to result.php
 
 
 
