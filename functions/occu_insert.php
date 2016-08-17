@@ -6,15 +6,13 @@ require_once '../config/DB.php';
 try{
 
     $occupance_count = $_POST['occupance_count'];
-    $shgpp = 0;//$_POST['shgpp'];
 
 
     $stmt = $DB->prepare("INSERT INTO tbl_occupance
-                      (occupance_count,shgpp) VALUES
-                      (:occupance_count,:shgpp)");
+                      (occupance_count) VALUES
+                      (:occupance_count)");
 
 
-    $stmt->bindParam(":shgpp",$shgpp);
     $stmt->bindParam(":occupance_count",$occupance_count);
 
 

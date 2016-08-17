@@ -11,7 +11,7 @@ try{
 
     $stmt = $DB->prepare("INSERT INTO tbl_lighting
                       (votage,uf,bf) VALUES
-                      (:votage,:uf,bf)");
+                      (:votage,:uf,:bf)");
 
 
     $stmt->bindParam(":votage",$votage);

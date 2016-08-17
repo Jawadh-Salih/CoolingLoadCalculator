@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 17, 2016 at 07:41 AM
+-- Generation Time: Aug 17, 2016 at 09:47 AM
 -- Server version: 5.6.16-1~exp1
 -- PHP Version: 5.6.24-1+deb.sury.org~xenial+1
 
@@ -96,6 +96,13 @@ CREATE TABLE `tbl_equipment` (
   `uf` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `tbl_equipment`
+--
+
+INSERT INTO `tbl_equipment` (`id`, `votage`, `uf`) VALUES
+(1, 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -125,6 +132,13 @@ CREATE TABLE `tbl_lighting` (
   `bf` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `tbl_lighting`
+--
+
+INSERT INTO `tbl_lighting` (`id`, `votage`, `uf`, `bf`) VALUES
+(1, 1, 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -133,7 +147,6 @@ CREATE TABLE `tbl_lighting` (
 
 CREATE TABLE `tbl_occupance` (
   `occupance_count` int(11) NOT NULL,
-  `shgpp` double NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -141,9 +154,8 @@ CREATE TABLE `tbl_occupance` (
 -- Dumping data for table `tbl_occupance`
 --
 
-INSERT INTO `tbl_occupance` (`occupance_count`, `shgpp`, `id`) VALUES
-(1, 0, 1),
-(3, 0, 2);
+INSERT INTO `tbl_occupance` (`occupance_count`, `id`) VALUES
+(1, 4);
 
 -- --------------------------------------------------------
 
@@ -201,6 +213,13 @@ CREATE TABLE `tbl_ventilation` (
   `inside_mois` double NOT NULL,
   `outside_mois` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_ventilation`
+--
+
+INSERT INTO `tbl_ventilation` (`id`, `volume_flowrate`, `int_temp`, `ext_temp`, `inside_mois`, `outside_mois`) VALUES
+(1, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -333,7 +352,7 @@ ALTER TABLE `tbl_window`
 -- AUTO_INCREMENT for table `tbl_equipment`
 --
 ALTER TABLE `tbl_equipment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_floor`
 --
@@ -343,17 +362,17 @@ ALTER TABLE `tbl_floor`
 -- AUTO_INCREMENT for table `tbl_lighting`
 --
 ALTER TABLE `tbl_lighting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_occupance`
 --
 ALTER TABLE `tbl_occupance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tbl_ventilation`
 --
 ALTER TABLE `tbl_ventilation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_window`
 --
