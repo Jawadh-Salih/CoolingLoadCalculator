@@ -3,7 +3,7 @@
 require_once '../config/DB.php';
 
 $sensible_load = array(0,0,0,0,0,0,0,0,0,0);
-$latent_load - (double)0;
+$latent_load = (double)0;
 
 $final_sensible_load = (double)0;
 $final_latent_load = (double)0;
