@@ -3,8 +3,9 @@
 require_once '../config/DB.php';
 
 $sensible_load = array(0,0,0,0,0,0,0,0,0,0);
-$latent_load - (double)0;
+$latent_load = (double)0;
 
+print_r($sensible_load);
 $final_sensible_load = (double)0;
 $final_latent_load = (double)0;
 
@@ -115,7 +116,7 @@ $shgpp = (double)1;
 $lhgpp = (double)1;
 $CLF = 1;
 
-//CLTB Values
+//CLTB Values change this value and array elements
 $num_cltb = 10;
 
 
@@ -140,7 +141,7 @@ while($i<sizeof($result)){
     $wall_thickness = $result[$i]['thickness'];
     $wall_direction = $result[$i]['direction'];
     $wall_k_val = $result[$i]['k_val'];
-    print($wall_id);
+//    print($wall_id);
 
     //calculate the wall area.
     $wall_area = $wall_height*$wall_width;
@@ -181,12 +182,18 @@ while($i<sizeof($result)){
 
     if($wall_type == "Sunlit-YES"){
         //Obtain the CLTD values using a loop and do the calculation for each time value
-        $sql_cltb_wall= "SELECT * FROM cltb_wall WHERE direction = :wall_direction";
+        $sql_cltb_wall= "SELECT * FROM tbl_cltd_wall WHERE Direction = :wall_direction";
         $stmt = $DB->prepare($sql_cltb_wall);
         $stmt->bindParam(':wall_direction', $wall_direction);
         $stmt->execute();
         
         //Obtain all the values with respect to the passed direction and insert in the $sensible_load array
+        $result = $stmt->fetch(PDO::FETCH);
+        $j=1;
+        while ($j<sizeof($result)){
+            $sensible_load[$j] += ($wall_u_value * $wall_area * $result[$j]);
+            $j++;
+        }
         
     }
 
@@ -200,6 +207,7 @@ while($i<sizeof($result)){
     $i++;
 }
 
+
 //Sensible load calculation - wall - done
 
 //Sensible load calculation - window - start
@@ -212,7 +220,7 @@ $result = $result->fetchAll(PDO::FETCH_ASSOC);
 $i=0;
 while($i<sizeof($result)){
 //Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
-    $window_id = $result[$i]['win_id'];
+    $window_id = $result[$i]['window_id'];
     $win_wall_id = $result[$i]['wall_id'];
     $window_height = $result[$i]['height'];
     $window_width = $result[$i]['width'];
@@ -220,7 +228,7 @@ while($i<sizeof($result)){
     $window_ext_tem = $result[$i]['ext_temp'];
     $window_thickness = $result[$i]['thickness'];
     $window_k_val = $result[$i]['k_val'];
-    print($window_id);
+//    print($window_id);
     
     $window_area = $window_height * $window_width;
     $wall_u_value = (1/$h0) + ($window_thickness/$window_k_val) + (1/$h1);
@@ -232,20 +240,27 @@ while($i<sizeof($result)){
         
     //CLTB calc for sensible load window calculation
         //Need to get the direction of the window - for that look in which wall is this and obtained its direction
-        $sql_win_dir= "SELECT direction FROM wall WHERE wall_id = :wall_id";
+        $sql_win_dir= "SELECT Direction FROM tbl_wall WHERE wall_id = :wall_id";
         $stmt = $DB->prepare($sql_win_dir);
         $stmt->bindParam(':wall_id', $win_wall_id);
         $stmt->execute();
         
-        // provide the wall direction from the result of this stmt->execute() to the below querry 
+        // provide the wall direction from the result of this stmt->execute() to the below querry
+        // salih add
         
-        $sql_cltb_wall= "SELECT * FROM cltb_wall WHERE direction = :wall_direction";
+        $sql_cltb_wall= "SELECT * FROM tbl_cltd_wall WHERE Direction = :wall_direction";
         $stmt = $DB->prepare($sql_cltb_wall);
         $stmt->bindParam(':wall_direction', $wall_direction);
         $stmt->execute();
         
         //Using the result of this loop through the CLTB values and add the results to the $sensible_load array
-        
+        //salih add
+        $result = $stmt->fetch(PDO::FETCH);
+        $j=1;
+        while ($j<sizeof($result)){
+            $sensible_load[$j] += ($window_u_value * $window_area * $result[$j]);
+            $j++;
+        }
 
         //Do this again and again for all the windows of the table
     $i++;
@@ -271,7 +286,7 @@ while($i<sizeof($result)){
     $door_ext_tem = $result[$i]['ext_temp'];
     $door_thickness = $result[$i]['thickness'];
     $door_k_val = $result[$i]['k_val'];
-    print($door_id);
+//    print($door_id);
     
     $door_area = $door_height * $door_width;
     $door_u_value = (1/$h0) + ($door_thickness/$door_k_val) + (1/$h1);
@@ -303,8 +318,9 @@ while($i<sizeof($result)){
     $floor_ext_tem = $result[$i]['ext_temp'];
     $floor_thickness = $result[$i]['thickness'];
     $floor_k_val = $result[$i]['k_val'];
-    print($floor_id);
-    
+//    print($floor_id);
+
+
     $floor_area = $floor_height * $floor_width;
     $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
     
@@ -325,8 +341,10 @@ $result = $DB->prepare($sql);
 
 $result->execute();
 $result = $result->fetchAll(PDO::FETCH_ASSOC);
+
 $i=0;
 while($i<sizeof($result)){
+
 //Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
     $roof_id = $result[$i]['roof_id'];
     $roof_type = $result[$i]['roof_type'];
@@ -334,27 +352,43 @@ while($i<sizeof($result)){
     $roof_width = $result[$i]['width'];
     $roof_thickness = $result[$i]['thickness'];
     $roof_k_val = $result[$i]['k_val'];
-    print($door_id);
+
+//    print($roof_id);
     
     $roof_area = $roof_height * $roof_width;
     $roof_u_value = (1/$h0) + ($roof_thickness/$roof_k_val) + (1/$h1);
-    
-    //Obtained the cltb-roof values based on the type and iterate through that
-    $sql_cltb_roof= "SELECT * FROM cltb_roof WHERE roof_type = :roof_type";
-       $stmt = $DB->prepare($sql_cltb_roof);
-       $stmt->bindParam(':roof_type', $roof_type);
-       $stmt->execute();
-       
-    //Obtain the array from the above query result and calc the value for each time and sum up with $sensible_load
 
+    //Obtained the cltb-roof values based on the type and iterate through that
+    $sql_cltb_roof= "SELECT * FROM tbl_cltd_roof WHERE type = :roof_type";
+
+       $stmt = $DB->prepare($sql_cltb_roof);
+
+       $stmt->bindParam(':roof_type', $roof_type);
+
+    $stmt->execute();
+
+    //Obtain the array from the above query result and calc the value for each time and sum up with $sensible_load
+        //salih add
+        $result = $stmt->fetch();
+
+    print(sizeof($result));
+//    print_r($sensible_load);
+
+    $j=1;
+        while ($j<sizeof($result)){
+            $sensible_load[$j] += ($roof_u_value * $roof_area * $result[$j]);
+            $j++;
+
+        }
     $i++;
+
 }
 
 //Sensible load calculation - roof - done
 
 //Sensible load and Latent Load calculation - ventilation - start
 
-$sql = "SELECT * FROM tbl_ventilation";
+$sql = "SELECT * FROM tbl_ventilation LIMIT 1";
 $result = $DB->prepare($sql);
 
 //Assign each into variables
@@ -363,6 +397,19 @@ $ven_int_temp = (double)0;
 $ven_ext_temp = (double)0;
 $ven_inside_mois = (double)0;
 $ven_outside_mois = (double)0;
+
+$result->execute();
+
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while ($i<sizeof($result)){
+    $ven_volume_floor_rate = $result[$i]['volume_flowrate'];
+    $ven_int_temp = [$i]['int_temp'];
+    $ven_ext_temp = [$i]['ext_temp'];
+    $ven_inside_mois = [$i]['inside_mois'];
+    $ven_outside_mois = [$i]['outside_mois'];
+    $i++;
+}
 
 $ven_sensible = $ven_volume_floor_rate * abs($ven_ext_temp-$ven_int_temp) * abs(1-$bpf) * $ro * $cp; 
 $ven_latent = $ven_volume_floor_rate * abs($ven_outside_mois-$ven_inside_mois) * abs(1-$bpf) * $ro * $hpg;
@@ -373,7 +420,7 @@ for($x = 0; $x < $num_cltb; $x++) {
         
 $latent_load += $ven_latent;
 
-$result->execute();
+//$result->execute();
 
 //Sensible load and Latent Load calculation - ventilation - done
 
@@ -382,7 +429,14 @@ $result->execute();
 $sql = "SELECT * FROM tbl_occupance";
 $result = $DB->prepare($sql);
 //Assign values from DB
+$result->execute();
 
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while ($i<sizeof($result)){
+    $num_of_occupance = $result[$i]['occupance_count'];
+    $i++;
+}
 $occupance_sensible = $num_of_occupance * $shgpp * $CLF;
 $occupance_latent = $num_of_occupance * $lhgpp;
 
@@ -397,10 +451,17 @@ $latent_load += $occupance_latent;
 
 //Sensible load and Latent Load calculation - Lighting - start
 
-$sql = "SELECT * FROM tbl_lighting";
+$sql = "SELECT * FROM tbl_lighting LIMIT 1";
 $result = $DB->prepare($sql);
 //Assign values from DB
-
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while ($i<sizeof($result)){
+    $lit_votage = $result[$i]['votage'];
+    $lit_BF = $result[$i]['bf'];
+    $lit_UF = $result[$i]['uf'];
+    $i++;
+}
 $lit_sensible = $lit_votage * $lit_BF * $lit_UF * $CLF;
 
 for($x = 0; $x < $num_cltb; $x++) {
@@ -411,10 +472,16 @@ for($x = 0; $x < $num_cltb; $x++) {
 
 //Sensible load and Latent Load calculation - equipment - start
 
-$sql = "SELECT * FROM tbl_equipment";
+$sql = "SELECT * FROM tbl_equipment LIMIT 1";
 $result = $DB->prepare($sql);
 //Assign values from DB
-
+$result = $result->fetchAll(PDO::FETCH_ASSOC);
+$i=0;
+while ($i<sizeof($result)){
+    $eq_votage = $result[$i]['votage'];
+    $eq_UF = $result[$i]['uf'];
+    $i++;
+}
 $eq_sensible = $eq_votage * $eq_UF * $CLF;
 
 for($x = 0; $x < $num_cltb; $x++) {
@@ -424,17 +491,18 @@ for($x = 0; $x < $num_cltb; $x++) {
 //Sensible load and Latent Load calculation - equipment - done
 
 //Final Values - results
-$final_sensible_load = (double)0; //Asign the maximunm of $sensible_load array
+$final_sensible_load = max($sensible_load); //Asign the maximunm of $sensible_load array
 $final_latent_load = $latent_load;
 
 $final_result = $final_sensible_load + $final_latent_load;
 
+//print($final_latent_load);
 //Render these three to result.php
 //Need to transfer variables to result.php
+echo  $final_result;
 
+//print_r($sensible_load);
 
-
-$url = "../results.html";
+$url = "../results.php?out1=".$final_sensible_load."&out2=".$final_latent_load."&out3=".$final_result;
 
 header("Location: $url");
-?>
