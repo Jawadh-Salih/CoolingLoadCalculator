@@ -124,7 +124,7 @@
         
         <li><a href="lighting.html"><i class="fa fa-th"></i> <span>Lighting</span></a></li>
         
-        <li><a href="results.html"><i class="fa fa-th"></i> <span>Results</span></a></li>
+        <li><a href="results.php"><i class="fa fa-th"></i> <span>Results</span></a></li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -165,17 +165,20 @@
                             
                         <div class="form-group">
                             <label>Output Value 1:</label>
-                            <input type="number" step="any" class="form-control" style="width: 200px" name ="out1" disabled="true">
+                            <input type="number" step="any" class="form-control" style="width: 200px" name ="out1" disabled="true"
+                                   value="<?php echo $_GET['out1'];?>">
                         </div>
                             
                         <div class="form-group">
                             <label>Output Value 2:</label>
-                            <input type="number" step="any" class="form-control" style="width: 200px" name ="out2" disabled="true">
+                            <input type="number" step="any" class="form-control" style="width: 200px" name ="out2" disabled="true"
+                                   value="<?php echo $_GET['out2'];?>" >
                         </div>
                             
                         <div class="form-group">
                             <label>Output Value 3:</label>
-                            <input type="number" step="any" class="form-control" style="width: 200px" name ="out3" disabled="true">
+                            <input type="number" step="any" class="form-control" style="width: 200px" name ="out3" disabled="true"
+                                   value="<?php echo $_GET['out3'];?>">
                         </div>  
 
                     </div><!-- /.box-body -->

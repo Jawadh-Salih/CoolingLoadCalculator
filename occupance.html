@@ -124,7 +124,7 @@
         
         <li><a href="lighting.html"><i class="fa fa-th"></i> <span>Lighting</span></a></li>
         
-        <li><a href="results.html"><i class="fa fa-th"></i> <span>Results</span></a></li>
+        <li><a href="results.php"><i class="fa fa-th"></i> <span>Results</span></a></li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -157,11 +157,11 @@
                       </div>
                   </div><!-- /.box-header -->
                   <div class="box-body">
-                        <form role="form" method="POST" id="1" action="">                       
+                        <form role="form" method="POST" id="1" action="functions/occu_insert.php">
                             
                         <div class="form-group">
                             <label>Number of Occupance:</label>
-                            <input type="number" step="any" class="form-control" style="width: 200px" name ="number_of_occupance" min="0">
+                            <input type="number" step="any" class="form-control" style="width: 200px" name ="occupance_count" min="0">
                         </div>    
                             
                        <button type="submit" style="padding-bottom: 10px" id="btn-login" class="btn btn-warning btn-info pull-left">Submit Occupance Data</button>                            
