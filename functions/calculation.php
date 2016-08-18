@@ -179,6 +179,7 @@ while($i<sizeof($result)){
     }
     $wall_area -= ($door_area+$window_area);
     $wall_u_value = (1/$h0) + ($wall_thickness/$wall_k_val) + (1/$h1);
+    $wall_u_value = 1/$wall_u_value;
 
     if($wall_type == "Sunlit-YES"){
         //Obtain the CLTD values using a loop and do the calculation for each time value
@@ -231,11 +232,12 @@ while($i<sizeof($result)){
 //    print($window_id);
     
     $window_area = $window_height * $window_width;
-    $wall_u_value = (1/$h0) + ($window_thickness/$window_k_val) + (1/$h1);
+    $window_u_value = (1/$h0) + ($window_thickness/$window_k_val) + (1/$h1);
+    $window_u_value = 1/$window_u_value;
     
     //Temperature difference calculation for sensible load window
     for($x = 0; $x < $num_cltb; $x++) {
-           $sensible_load[$x] += ($wall_u_value * $window_area * abs(($window_ext_tem-$window_int_tem)));
+           $sensible_load[$x] += ($window_u_value * $window_area * abs(($window_ext_tem-$window_int_tem)));
         }
         
     //CLTB calc for sensible load window calculation
