@@ -14,7 +14,7 @@ try{
     $roof_id = $_POST['roof_id'];
     $roof_type= $_POST['roof_type'];
     $height = $_POST['height'];
-    $length = $_POST['length'];
+    $length = $_POST['width'];
     $thickness = $_POST['thickness'];
     //  $door_frame_val = $_POST['frame_val'];
     //  $int_temp  = $_POST['int_temp'];

@@ -5,7 +5,6 @@ require_once '../config/DB.php';
 $sensible_load = array(0,0,0,0,0,0,0,0,0,0);
 $latent_load = (double)0;
 
-print_r($sensible_load);
 $final_sensible_load = (double)0;
 $final_latent_load = (double)0;
 
@@ -186,7 +185,7 @@ while($i<sizeof($result)){
         $stmt = $DB->prepare($sql_cltb_wall);
         $stmt->bindParam(':wall_direction', $wall_direction);
         $stmt->execute();
-        
+
         //Obtain all the values with respect to the passed direction and insert in the $sensible_load array
         $result = $stmt->fetch(PDO::FETCH);
         $j=1;
@@ -194,11 +193,11 @@ while($i<sizeof($result)){
             $sensible_load[$j] += ($wall_u_value * $wall_area * $result[$j]);
             $j++;
         }
-        
+
     }
 
     else{
-        
+
         for($x = 0; $x < $num_cltb; $x++) {
            $sensible_load[$x] += ($wall_u_value * $wall_area * abs(($wall_ext_tem-$wall_int_tem)));
         }
@@ -219,7 +218,7 @@ $result->execute();
 $result = $result->fetchAll(PDO::FETCH_ASSOC);
 $i=0;
 while($i<sizeof($result)){
-//Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
+//Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan
     $window_id = $result[$i]['window_id'];
     $win_wall_id = $result[$i]['wall_id'];
     $window_height = $result[$i]['height'];
@@ -229,33 +228,33 @@ while($i<sizeof($result)){
     $window_thickness = $result[$i]['thickness'];
     $window_k_val = $result[$i]['k_val'];
 //    print($window_id);
-    
+
     $window_area = $window_height * $window_width;
     $wall_u_value = (1/$h0) + ($window_thickness/$window_k_val) + (1/$h1);
-    
+
     //Temperature difference calculation for sensible load window
     for($x = 0; $x < $num_cltb; $x++) {
            $sensible_load[$x] += ($wall_u_value * $window_area * abs(($window_ext_tem-$window_int_tem)));
         }
-        
+
     //CLTB calc for sensible load window calculation
         //Need to get the direction of the window - for that look in which wall is this and obtained its direction
         $sql_win_dir= "SELECT Direction FROM tbl_wall WHERE wall_id = :wall_id";
         $stmt = $DB->prepare($sql_win_dir);
         $stmt->bindParam(':wall_id', $win_wall_id);
         $stmt->execute();
-        
+
         // provide the wall direction from the result of this stmt->execute() to the below querry
         // salih add
-        
+
         $sql_cltb_wall= "SELECT * FROM tbl_cltd_wall WHERE Direction = :wall_direction";
         $stmt = $DB->prepare($sql_cltb_wall);
         $stmt->bindParam(':wall_direction', $wall_direction);
         $stmt->execute();
-        
+
         //Using the result of this loop through the CLTB values and add the results to the $sensible_load array
         //salih add
-        $result = $stmt->fetch(PDO::FETCH);
+        $result = $stmt->fetch();
         $j=1;
         while ($j<sizeof($result)){
             $sensible_load[$j] += ($window_u_value * $window_area * $result[$j]);

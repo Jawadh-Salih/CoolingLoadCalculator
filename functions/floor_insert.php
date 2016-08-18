@@ -4,7 +4,7 @@ require_once '../config/DB.php';
 try{
 
     $floor_id = $_POST['floor_id'];
-    $floor_width= $_POST['length'];
+    $floor_width= $_POST['width'];
     $floor_height = $_POST['height'];
     $floor_thickness = $_POST['thickness'];
 //  $door_frame_val = $_POST['frame_val'];
