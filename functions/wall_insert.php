@@ -8,7 +8,7 @@ try{
     $window_count = $_POST['num_of_windows'];
     $door_count = $_POST['num_of_doors'];
     $direction = $_POST['direction'];
-    $length = $_POST['length'];
+    $length = $_POST['width'];
     $height = $_POST['height'];
     $thickness = $_POST['thickness'];
     $int_temp  = $_POST['int_temp'];
@@ -16,7 +16,7 @@ try{
     $k_value = $_POST['k_val'];
 
     $stmt = $DB->prepare("INSERT INTO tbl_wall
-                      (wall_id,is_sunlit,window_count,door_count,direction,thickness,length,height,int_temp,ext_temp,k_val) VALUES
+                      (wall_id,is_sunlit,window_count,door_count,direction,thickness,width,height,int_temp,ext_temp,k_val) VALUES
                       (:wall_id,:is_sunlit,:window_count,:door_count,:direction,:thickness,:length,:height,:int_temp,:ext_temp,:k_val)");
     $stmt->bindParam(":wall_id",$wall_id);
     $stmt->bindParam(":is_sunlit",$wall_type);
