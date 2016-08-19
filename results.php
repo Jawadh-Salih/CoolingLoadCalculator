@@ -166,19 +166,26 @@
                         <div class="form-group">
                             <label>Output Value 1:</label>
                             <input type="number" step="any" class="form-control" style="width: 200px" name ="out1" disabled="true"
-                                   value="<?php echo $_GET['out1'];?>">
+                                   value="<?php  if (isset($_GET['out1']))
+                                              echo $_GET['out1'];
+                                            ?>">
                         </div>
                             
                         <div class="form-group">
                             <label>Output Value 2:</label>
                             <input type="number" step="any" class="form-control" style="width: 200px" name ="out2" disabled="true"
-                                   value="<?php echo $_GET['out2'];?>" >
+                                   value="<?php  if (isset($_GET['out2']))
+                                              echo $_GET['out2'];
+                                            ?>">
                         </div>
                             
                         <div class="form-group">
                             <label>Output Value 3:</label>
                             <input type="number" step="any" class="form-control" style="width: 200px" name ="out3" disabled="true"
-                                   value="<?php echo $_GET['out3'];?>">
+                                   value="<?php
+                                        if (isset($_GET['out3']))
+                                              echo $_GET['out3'];
+                                            ?>">
                         </div>  
 
                     </div><!-- /.box-body -->
