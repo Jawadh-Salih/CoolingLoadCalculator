@@ -219,17 +219,21 @@ $result = $DB->prepare($sql);
 
 $result->execute();
 $result = $result->fetchAll(PDO::FETCH_ASSOC);
-$i=0;
-while($i<sizeof($result)){
+
+print_r(sizeof($result));
+$var = sizeof($result);
+for($ii=0; $ii < $var ;$ii++){
 //Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan
-    $window_id = $result[$i]['window_id'];
-    $win_wall_id = $result[$i]['wall_id'];
-    $window_height = $result[$i]['height'];
-    $window_width = $result[$i]['width'];
-    $window_int_tem = $result[$i]['int_temp'];
-    $window_ext_tem = $result[$i]['ext_temp'];
-    $window_thickness = $result[$i]['thickness'];
-    $window_k_val = $result[$i]['k_val'];
+        
+        echo $ii;
+    $window_id = $result[$ii]['window_id'];
+    $win_wall_id = $result[$ii]['wall_id'];
+    $window_height = $result[$ii]['height'];
+    $window_width = $result[$ii]['width'];
+    $window_int_tem = $result[$ii]['int_temp'];
+    $window_ext_tem = $result[$ii]['ext_temp'];
+    $window_thickness = $result[$ii]['thickness'];
+    $window_k_val = $result[$ii]['k_val'];
 //    print($window_id);
 
     $window_area = $window_height * $window_width;
@@ -253,22 +257,40 @@ while($i<sizeof($result)){
         // provide the wall direction from the result of this stmt->execute() to the below querry
         // salih add
 
+        $dir = $stmt->fetch(PDO::FETCH_ASSOC);
+        //print_r($dir);
+        $wall_direction = $dir['Direction'];
+
+
         $sql_cltb_wall= "SELECT * FROM tbl_shgf_window WHERE Direction = :wall_direction";
-        $stmt = $DB->prepare($sql_cltb_wall);
-        $stmt->bindParam(':wall_direction', $wall_direction);
-        $stmt->execute();
+        $shgf = $DB->prepare($sql_cltb_wall);
+        $shgf->bindParam(':wall_direction', $wall_direction);
+        $shgf->execute();
+
 
         //Using the result of this loop through the CLTB values and add the results to the $sensible_load array
         //salih add
-        $result = $stmt->fetch();
-        $j=1;
-        while ($j<sizeof($result)){
-            $sensible_load[$j] += ($window_u_value * $window_area * $convesion * $result[$j]);
-            $j++;
+        $result = $shgf->fetch(PDO::FETCH_ASSOC);
+        $time = array();
+        $time1 = $result['0900'];
+        $time2 = $result['1000'];
+        $time3 = $result['1100'];
+        $time4 = $result['1200'];
+        $time5 = $result['1300'];
+        $time6 = $result['1400'];
+        $time7 = $result['1500'];
+        $time8 = $result['1600'];
+        $time9 = $result['1700'];
+        $time10 = $result['1800'];
+
+        $time = array($time1,$time2,$time3,$time4,$time5,$time6,$time7,$time8,$time9,$time10);
+        $size_time = sizeof($time);
+        for ($j=0;$j< $size_time;$j++){
+            $sensible_load[$j] += ($window_u_value * $window_area * $convesion*$time[$j]);
         }
 
         //Do this again and again for all the windows of the table
-    $i++;
+
 }
 //Sensible load calculation - window - done
 
@@ -352,7 +374,9 @@ $result->execute();
 $result = $result->fetchAll(PDO::FETCH_ASSOC);
 
 $i=0;
-while($i<sizeof($result)){
+
+$var = sizeof($result);
+while($i<$var){
 
 //Foreign key eka tiyana nisa $win_wall_id mehema ganna puluwanda kiyala chk karapan machan 
     $roof_id = $result[$i]['roof_id'];
@@ -382,15 +406,25 @@ while($i<sizeof($result)){
     $stmt->execute();
 
     //Obtain the array from the above query result and calc the value for each time and sum up with $sensible_load
-        //salih add
-        $result = $stmt->fetch();
+        //salih ad
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $time = array();
+        $time1 = $result['0900'];
+        $time2 = $result['1000'];
+        $time3 = $result['1100'];
+        $time4 = $result['1200'];
+        $time5 = $result['1300'];
+        $time6 = $result['1400'];
+        $time7 = $result['1500'];
+        $time8 = $result['1600'];
+        $time9 = $result['1700'];
+        $time10 = $result['1800'];
 
-//    print(sizeof($result));
-//    print_r($sensible_load);
-
-    $j=1;
-        while ($j<sizeof($result)){
-            $sensible_load[$j] += ($roof_u_value * $roof_area * $result[$j] * $con);
+        $time = array($time1,$time2,$time3,$time4,$time5,$time6,$time7,$time8,$time9,$time10);
+        $size_time = sizeof($time);
+        $j=0;
+        while ($j<$size_time){
+            $sensible_load[$j] += ($roof_u_value * $roof_area * $size_time[$j] * $con);
             $j++;
 
         }
@@ -416,12 +450,13 @@ $result->execute();
 
 $result = $result->fetchAll(PDO::FETCH_ASSOC);
 $i=0;
-while ($i<sizeof($result)){
+$var = sizeof($result);
+while ($i<$var){
     $ven_volume_floor_rate = $result[$i]['volume_flowrate'];
-    $ven_int_temp = [$i]['int_temp'];
-    $ven_ext_temp = [$i]['ext_temp'];
-    $ven_inside_mois = [$i]['inside_mois'];
-    $ven_outside_mois = [$i]['outside_mois'];
+    $ven_int_temp = $result[$i]['int_temp'];
+    $ven_ext_temp = $result[$i]['ext_temp'];
+    $ven_inside_mois = $result[$i]['inside_mois'];
+    $ven_outside_mois = $result[$i]['outside_mois'];
     $i++;
 }
 
