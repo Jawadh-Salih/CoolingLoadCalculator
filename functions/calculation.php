@@ -329,6 +329,8 @@ while($i<sizeof($result)){
 
     $floor_area = $floor_height * $floor_width;
     $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
+
+
     $floor_u_value = 1/$floor_u_value;
     
     //Temperature difference calculation for sensible load door
@@ -359,11 +361,15 @@ while($i<sizeof($result)){
     $roof_width = $result[$i]['width'];
     $roof_thickness = $result[$i]['thickness'];
     $roof_k_val = $result[$i]['k_val'];
+    echo  $roof_thickness/$roof_k_val."roof k avla \n";
+
 
 //    print($roof_id);
     
     $roof_area = $roof_height * $roof_width;
-    $roof_u_value = (1/$h0) + ($roof_thickness/$roof_k_val) + (1/$h1);
+    $roof_u_value = (1/$h0) + ($roof_thickness/($roof_k_val+1)) + (1/$h1);
+
+//    echo  $roof_k_val;
     $roof_u_value = 1/$roof_u_value;
 
     //Obtained the cltb-roof values based on the type and iterate through that
@@ -379,7 +385,7 @@ while($i<sizeof($result)){
         //salih add
         $result = $stmt->fetch();
 
-    print(sizeof($result));
+//    print(sizeof($result));
 //    print_r($sensible_load);
 
     $j=1;

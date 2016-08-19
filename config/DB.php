@@ -8,7 +8,7 @@ $DB_host = "localhost";
 $DB_user = "root";
 //$DB_pass = "laurantseries";
 $DB_pass = "";
-$DB_name = "coolingload";
+$DB_name = "coolinload";
 
 try
 {

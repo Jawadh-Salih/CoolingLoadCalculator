@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 18, 2016 at 02:34 PM
+-- Generation Time: Aug 19, 2016 at 09:27 AM
 -- Server version: 5.6.16-1~exp1
 -- PHP Version: 5.6.24-1+deb.sury.org~xenial+1
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `coolingload`
+-- Database: `coolin`
 --
 
 -- --------------------------------------------------------
@@ -39,6 +39,15 @@ CREATE TABLE `tbl_cltd_roof` (
   `1700` double NOT NULL,
   `1800` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_cltd_roof`
+--
+
+INSERT INTO `tbl_cltd_roof` (`Type`, `0900`, `1000`, `1100`, `1200`, `1300`, `1400`, `1500`, `1600`, `1700`, `1800`) VALUES
+('Type 1', 34, 49, 61, 71, 78, 79, 77, 70, 59, 45),
+('Type 2', 11, 20, 30, 41, 51, 59, 65, 66, 66, 62),
+('Type 3', 14, 16, 18, 22, 26, 31, 36, 40, 43, 45);
 
 -- --------------------------------------------------------
 
@@ -65,7 +74,14 @@ CREATE TABLE `tbl_cltd_wall` (
 --
 
 INSERT INTO `tbl_cltd_wall` (`Direction`, `0900`, `1000`, `1100`, `1200`, `1300`, `1400`, `1500`, `1600`, `1700`, `1800`) VALUES
-('north', 11, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+('East', 19, 18, 19, 19, 20, 21, 22, 23, 24, 24),
+('North', 11, 11, 10, 10, 10, 10, 10, 10, 10, 11),
+('North East', 15, 15, 15, 15, 16, 16, 17, 18, 18, 18),
+('North West', 17, 16, 16, 15, 15, 14, 14, 14, 14, 14),
+('South', 16, 15, 14, 14, 14, 14, 14, 15, 14, 15),
+('South East', 18, 18, 18, 18, 18, 19, 20, 21, 20, 21),
+('South West', 20, 19, 19, 18, 17, 17, 17, 17, 17, 17),
+('West', 22, 21, 20, 19, 19, 18, 18, 18, 18, 18);
 
 -- --------------------------------------------------------
 
@@ -89,7 +105,7 @@ CREATE TABLE `tbl_door` (
 --
 
 INSERT INTO `tbl_door` (`door_id`, `height`, `width`, `thickness`, `int_temp`, `ext_temp`, `k_val`, `wall_id`) VALUES
-(1, 12, 2, 1, 25, 27, 1.3, 1);
+(1, 1, 1, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -109,7 +125,7 @@ CREATE TABLE `tbl_equipment` (
 
 INSERT INTO `tbl_equipment` (`id`, `votage`, `uf`) VALUES
 (1, 1, 1),
-(2, 12, 0.54);
+(2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -132,7 +148,7 @@ CREATE TABLE `tbl_floor` (
 --
 
 INSERT INTO `tbl_floor` (`floor_id`, `height`, `width`, `thickness`, `int_temp`, `ext_temp`, `k_val`) VALUES
-(1, 1, 1, 1, 1, 1, 0);
+(1, 1, 11, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -152,8 +168,7 @@ CREATE TABLE `tbl_lighting` (
 --
 
 INSERT INTO `tbl_lighting` (`id`, `votage`, `uf`, `bf`) VALUES
-(1, 1, 1, 1),
-(2, 1, 1, 122);
+(1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -171,8 +186,7 @@ CREATE TABLE `tbl_occupance` (
 --
 
 INSERT INTO `tbl_occupance` (`occupance_count`, `id`) VALUES
-(1, 4),
-(5, 5);
+(1, 4);
 
 -- --------------------------------------------------------
 
@@ -194,8 +208,7 @@ CREATE TABLE `tbl_roof` (
 --
 
 INSERT INTO `tbl_roof` (`roof_id`, `roof_type`, `height`, `width`, `thickness`, `k_val`) VALUES
-(1, 'Type 1', 1, 1, 1, 0),
-(12, 'Type 2', 12, 12, 2, 0);
+(1, 'Type 1', 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -217,6 +230,20 @@ CREATE TABLE `tbl_shgf_window` (
   `1800` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `tbl_shgf_window`
+--
+
+INSERT INTO `tbl_shgf_window` (`Direction`, `0900`, `1000`, `1100`, `1200`, `1300`, `1400`, `1500`, `1600`, `1700`, `1800`) VALUES
+('East', 151, 106, 47, 14, 14, 14, 13, 11, 8, 2),
+('North', 45, 44, 43, 41, 43, 44, 45, 50, 44, 5),
+('North East', 140, 109, 65, 28, 14, 14, 13, 11, 8, 2),
+('North West', 13, 14, 14, 14, 65, 109, 140, 153, 131, 55),
+('South', 94, 109, 116, 120, 116, 109, 94, 74, 50, 2),
+('South East', 163, 149, 121, 79, 36, 23, 13, 11, 8, 2),
+('South West', 13, 23, 36, 79, 121, 149, 163, 154, 99, 26),
+('West', 13, 14, 14, 14, 47, 106, 151, 164, 138, 54);
+
 -- --------------------------------------------------------
 
 --
@@ -237,8 +264,7 @@ CREATE TABLE `tbl_ventilation` (
 --
 
 INSERT INTO `tbl_ventilation` (`id`, `volume_flowrate`, `int_temp`, `ext_temp`, `inside_mois`, `outside_mois`) VALUES
-(1, 1, 1, 1, 1, 1),
-(2, 3.4, 25, 27, 23.2, 20.1);
+(1, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -267,7 +293,7 @@ CREATE TABLE `tbl_wall` (
 INSERT INTO `tbl_wall` (`wall_id`, `is_sunlit`, `window_count`, `door_count`, `direction`, `thickness`, `width`, `height`, `int_temp`, `ext_temp`, `k_val`) VALUES
 (1, 'Sunlit - YES', 1, 1, 'North', 1, 1, 1, 1, 1, 1),
 (2, 'Sunlit - YES', 1, 1, 'North', 1, 1, 1, 1, 1, 1),
-(3, 'Sunlit - NO', 12, 2, 'West', 3, 34.4, 34, 25, 27, 1.43);
+(3, 'Sunlit - YES', 1, 1, 'North', 1, 1, 1, 1, 0, 4);
 
 -- --------------------------------------------------------
 
@@ -291,7 +317,7 @@ CREATE TABLE `tbl_window` (
 --
 
 INSERT INTO `tbl_window` (`window_id`, `height`, `width`, `thickness`, `k_val`, `wall_id`, `int_temp`, `ext_temp`) VALUES
-(1, 12, 12, 1, 2, 1, 25, 27);
+(3, 1, 2, 1, 1, 1, 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -389,22 +415,22 @@ ALTER TABLE `tbl_floor`
 -- AUTO_INCREMENT for table `tbl_lighting`
 --
 ALTER TABLE `tbl_lighting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_occupance`
 --
 ALTER TABLE `tbl_occupance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `tbl_ventilation`
 --
 ALTER TABLE `tbl_ventilation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_window`
 --
 ALTER TABLE `tbl_window`
-  MODIFY `window_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `window_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- Constraints for dumped tables
 --
