@@ -105,15 +105,17 @@ $eq_votage = (double)0;
 $eq_UF = (double)0;
 
 //$constants
-$h0 = (double)1;
-$h1 = (double)1;
+$h0 = (double)15;
+$h1 = (double)10;
 $bpf = (double)1;
-$ro = (double)1;
-$cp = (double)1;
+$ro = (double)1.225;
+$cp = (double)1.005;
 $hpg = (double)1;
-$shgpp = (double)1;
-$lhgpp = (double)1;
+$shgpp = (double)75;
+$lhgpp = (double)45;
 $CLF = 1;
+$convesion = 3.156;
+$con = 0.55556;
 
 //CLTB Values change this value and array elements
 $num_cltb = 10;
@@ -178,6 +180,7 @@ while($i<sizeof($result)){
     }
     $wall_area -= ($door_area+$window_area);
     $wall_u_value = (1/$h0) + ($wall_thickness/$wall_k_val) + (1/$h1);
+    $wall_u_value = 1/$wall_u_value;
 
     if($wall_type == "Sunlit-YES"){
         //Obtain the CLTD values using a loop and do the calculation for each time value
@@ -190,7 +193,7 @@ while($i<sizeof($result)){
         $result = $stmt->fetch(PDO::FETCH);
         $j=1;
         while ($j<sizeof($result)){
-            $sensible_load[$j] += ($wall_u_value * $wall_area * $result[$j]);
+            $sensible_load[$j] += ($wall_u_value * $wall_area * $result[$j] * $con);
             $j++;
         }
 
@@ -230,11 +233,14 @@ while($i<sizeof($result)){
 //    print($window_id);
 
     $window_area = $window_height * $window_width;
-    $wall_u_value = (1/$h0) + ($window_thickness/$window_k_val) + (1/$h1);
+
+    $window_u_value = (1/$h0) + ($window_thickness/$window_k_val) + (1/$h1);
+    $window_u_value = 1/$window_u_value;
+    
 
     //Temperature difference calculation for sensible load window
     for($x = 0; $x < $num_cltb; $x++) {
-           $sensible_load[$x] += ($wall_u_value * $window_area * abs(($window_ext_tem-$window_int_tem)));
+           $sensible_load[$x] += ($window_u_value * $window_area * abs(($window_ext_tem-$window_int_tem)));
         }
 
     //CLTB calc for sensible load window calculation
@@ -247,7 +253,7 @@ while($i<sizeof($result)){
         // provide the wall direction from the result of this stmt->execute() to the below querry
         // salih add
 
-        $sql_cltb_wall= "SELECT * FROM tbl_cltd_wall WHERE Direction = :wall_direction";
+        $sql_cltb_wall= "SELECT * FROM tbl_shgf_window WHERE Direction = :wall_direction";
         $stmt = $DB->prepare($sql_cltb_wall);
         $stmt->bindParam(':wall_direction', $wall_direction);
         $stmt->execute();
@@ -257,7 +263,7 @@ while($i<sizeof($result)){
         $result = $stmt->fetch();
         $j=1;
         while ($j<sizeof($result)){
-            $sensible_load[$j] += ($window_u_value * $window_area * $result[$j]);
+            $sensible_load[$j] += ($window_u_value * $window_area * $convesion * $result[$j]);
             $j++;
         }
 
@@ -289,6 +295,7 @@ while($i<sizeof($result)){
     
     $door_area = $door_height * $door_width;
     $door_u_value = (1/$h0) + ($door_thickness/$door_k_val) + (1/$h1);
+    $door_u_value = 1/$door_u_value;
     
     //Temperature difference calculation for sensible load door
     for($x = 0; $x < $num_cltb; $x++) {
@@ -322,6 +329,7 @@ while($i<sizeof($result)){
 
     $floor_area = $floor_height * $floor_width;
     $floor_u_value = (1/$h0) + ($floor_thickness/$floor_k_val) + (1/$h1);
+    $floor_u_value = 1/$floor_u_value;
     
     //Temperature difference calculation for sensible load door
     for($x = 0; $x < $num_cltb; $x++) {
@@ -356,6 +364,7 @@ while($i<sizeof($result)){
     
     $roof_area = $roof_height * $roof_width;
     $roof_u_value = (1/$h0) + ($roof_thickness/$roof_k_val) + (1/$h1);
+    $roof_u_value = 1/$roof_u_value;
 
     //Obtained the cltb-roof values based on the type and iterate through that
     $sql_cltb_roof= "SELECT * FROM tbl_cltd_roof WHERE type = :roof_type";
@@ -375,7 +384,7 @@ while($i<sizeof($result)){
 
     $j=1;
         while ($j<sizeof($result)){
-            $sensible_load[$j] += ($roof_u_value * $roof_area * $result[$j]);
+            $sensible_load[$j] += ($roof_u_value * $roof_area * $result[$j] * $con);
             $j++;
 
         }
